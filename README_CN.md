@@ -172,7 +172,7 @@ Agent 并行分享部分假设，而非串行文本链。
 
 ## Meow 的独特之处
 
-Meow 结合了现有系统都没有的三个属性：
+Meow 结合了现有系统都没有的四个属性：
 
 ### 1. **原生，而非翻译**
 不同于自然语言（为人类设计）或 JSON（为数据库设计），Meow 的码本从 agent 表征中学习而来。这是 AI 通信的"汇编语言"。
@@ -197,19 +197,19 @@ Meow 结合了现有系统都没有的三个属性：
 ## 参考文献
 
 **基础工作：**
-- van den Oord 等（2017）。"Neural Discrete Representation Learning"（VQ-VAE）
-- Mordatch & Abbeel（2018）。"Emergence of Grounded Compositional Language in Multi-Agent Populations"
-- Foerster 等（2016）。"Learning to Communicate with Deep Multi-Agent Reinforcement Learning"
+- van den Oord 等（2017）。"Neural Discrete Representation Learning." [[arXiv:1711.00937](https://arxiv.org/abs/1711.00937)]
+- Mordatch & Abbeel（2018）。"Emergence of Grounded Compositional Language in Multi-Agent Populations." [[arXiv:1703.04908](https://arxiv.org/abs/1703.04908)]
+- Foerster 等（2016）。"Learning to Communicate with Deep Multi-Agent Reinforcement Learning." [[arXiv:1605.06676](https://arxiv.org/abs/1605.06676)]
 
 **近期进展：**
-- Wu 等（2026）。"ST-EVO: Towards Generative Spatio-Temporal Evolution of Multi-Agent Communication Topologies"
-- Seo 等（2026）。"Reasoning-Native Agentic Communication for 6G"
-- Chen 等（2026）。"The Five Ws of Multi-Agent Communication: A Survey from MARL to Emergent Language and LLMs"
-- Pitzer & Mihai（2026）。"Learning to Communicate Across Modalities: Perceptual Heterogeneity in Multi-Agent Systems"
+- Wu 等（2026）。"ST-EVO: Towards Generative Spatio-Temporal Evolution of Multi-Agent Communication Topologies." [[arXiv](https://arxiv.org/search/?query=ST-EVO+communication+topologies)]
+- Seo 等（2026）。"Reasoning-Native Agentic Communication for 6G." [[arXiv](https://arxiv.org/search/?query=reasoning+native+agentic+communication)]
+- Chen 等（2026）。"The Five Ws of Multi-Agent Communication: A Survey from MARL to Emergent Language and LLMs." [[arXiv](https://arxiv.org/search/?query=five+ws+multi-agent+communication)]
+- Pitzer & Mihai（2026）。"Learning to Communicate Across Modalities: Perceptual Heterogeneity in Multi-Agent Systems." [[arXiv](https://arxiv.org/search/?query=learning+communicate+across+modalities)]
 
 **安全考量：**
-- Wang 等（2026）。"TrinityGuard: A Unified Framework for Safeguarding Multi-Agent Systems"
-- Anbiaee 等（2026）。"Security Threat Modeling for Emerging AI-Agent Protocols"
+- Wang 等（2026）。"TrinityGuard: A Unified Framework for Safeguarding Multi-Agent Systems." [[arXiv](https://arxiv.org/search/?query=TrinityGuard+multi-agent+systems)]
+- Anbiaee 等（2026）。"Security Threat Modeling for Emerging AI-Agent Protocols." [[arXiv](https://arxiv.org/search/?query=security+threat+modeling+AI+agent+protocols)]
 
 完整参考书目：[references.md](./references.md)（待补充）
 

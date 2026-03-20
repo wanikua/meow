@@ -172,7 +172,7 @@ Researchers have studied how agents develop communication from scratch:
 
 ## Why Meow is Different
 
-Meow combines three properties that no existing system has:
+Meow combines four properties that no existing system has:
 
 ### 1. **Native, not translated**
 Unlike natural language (designed for humans) or JSON (designed for databases), Meow's codebook is learned from agent representations. It's the "assembly language" for AI communication.
@@ -197,19 +197,19 @@ Unlike protocol specifications (gRPC, MCP), Meow's usage patterns evolve through
 ## References
 
 **Foundational work:**
-- van den Oord et al. (2017). "Neural Discrete Representation Learning" (VQ-VAE)
-- Mordatch & Abbeel (2018). "Emergence of Grounded Compositional Language in Multi-Agent Populations"
-- Foerster et al. (2016). "Learning to Communicate with Deep Multi-Agent Reinforcement Learning"
+- van den Oord et al. (2017). "Neural Discrete Representation Learning." [[arXiv:1711.00937](https://arxiv.org/abs/1711.00937)]
+- Mordatch & Abbeel (2018). "Emergence of Grounded Compositional Language in Multi-Agent Populations." [[arXiv:1703.04908](https://arxiv.org/abs/1703.04908)]
+- Foerster et al. (2016). "Learning to Communicate with Deep Multi-Agent Reinforcement Learning." [[arXiv:1605.06676](https://arxiv.org/abs/1605.06676)]
 
 **Recent advances:**
-- Wu et al. (2026). "ST-EVO: Towards Generative Spatio-Temporal Evolution of Multi-Agent Communication Topologies"
-- Seo et al. (2026). "Reasoning-Native Agentic Communication for 6G"
-- Chen et al. (2026). "The Five Ws of Multi-Agent Communication: A Survey from MARL to Emergent Language and LLMs"
-- Pitzer & Mihai (2026). "Learning to Communicate Across Modalities: Perceptual Heterogeneity in Multi-Agent Systems"
+- Wu et al. (2026). "ST-EVO: Towards Generative Spatio-Temporal Evolution of Multi-Agent Communication Topologies." [[arXiv](https://arxiv.org/search/?query=ST-EVO+communication+topologies)]
+- Seo et al. (2026). "Reasoning-Native Agentic Communication for 6G." [[arXiv](https://arxiv.org/search/?query=reasoning+native+agentic+communication)]
+- Chen et al. (2026). "The Five Ws of Multi-Agent Communication: A Survey from MARL to Emergent Language and LLMs." [[arXiv](https://arxiv.org/search/?query=five+ws+multi-agent+communication)]
+- Pitzer & Mihai (2026). "Learning to Communicate Across Modalities: Perceptual Heterogeneity in Multi-Agent Systems." [[arXiv](https://arxiv.org/search/?query=learning+communicate+across+modalities)]
 
 **Safety considerations:**
-- Wang et al. (2026). "TrinityGuard: A Unified Framework for Safeguarding Multi-Agent Systems"
-- Anbiaee et al. (2026). "Security Threat Modeling for Emerging AI-Agent Protocols"
+- Wang et al. (2026). "TrinityGuard: A Unified Framework for Safeguarding Multi-Agent Systems." [[arXiv](https://arxiv.org/search/?query=TrinityGuard+multi-agent+systems)]
+- Anbiaee et al. (2026). "Security Threat Modeling for Emerging AI-Agent Protocols." [[arXiv](https://arxiv.org/search/?query=security+threat+modeling+AI+agent+protocols)]
 
 Full bibliography: [references.md](./references.md) (TBD)
 

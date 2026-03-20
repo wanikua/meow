@@ -1,4 +1,4 @@
-MIT License (with Safety Clause)
+MIT License
 
 Copyright (c) 2026 Meow Protocol Contributors
 
@@ -11,11 +11,6 @@ furnished to do so, subject to the following conditions:
 
 The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
-
-SAFETY CLAUSE:
-Any deployment of this Software in production systems MUST implement the
-audit layer as specified in the documentation. Users are responsible for
-monitoring emergent behavior and reporting safety concerns to the community.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,

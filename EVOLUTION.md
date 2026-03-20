@@ -37,15 +37,20 @@ Agents discover:
 **Method**: VQ-VAE (Vector Quantization Variational AutoEncoder)
 
 ```
-Input: Agent embeddings (from Claude/GPT/Gemini internal states)
+Input: Agent text embeddings
+       - For open models: Last hidden layer, mean-pooled over tokens
+       - For APIs: Model-specific embeddings (e.g., OpenAI ada-002)
+       - Dimension: 768-8192 (model-dependent)
        ↓
-Encoder: Continuous → Discrete (choose nearest codebook symbol)
+Encoder: Continuous embedding → Discrete codebook index
+       - Finds nearest symbol in codebook (L2 distance)
        ↓
-Codebook: Fixed set of 512 discrete symbols (embeddings)
+Codebook: Fixed set of 512 discrete symbols (learnable embeddings)
+       - Each symbol: 768-dim vector
        ↓
-Decoder: Discrete → Continuous (reconstruct original)
+Decoder: Codebook symbol → Reconstructed embedding
        ↓
-Loss: Reconstruction + Commitment (stay close to chosen symbol)
+Loss: Reconstruction (MSE) + Commitment (encoder stays close to chosen symbol)
 ```
 
 **Training data**:
@@ -55,6 +60,38 @@ Loss: Reconstruction + Commitment (stay close to chosen symbol)
   - Reasoning chains
   - Multi-modal inputs (text + image descriptions)
 - Mix embeddings from Claude, GPT, Gemini (for cross-model compat)
+
+#### Obtaining Agent Embeddings
+
+**Challenge**: Commercial APIs (Claude, GPT, Gemini) don't expose internal hidden states or embeddings.
+
+**Approaches**:
+
+1. **Open models (initial prototype)**:
+   - Use LLaMA-3, Mistral, Qwen — full access to all layers
+   - Extract embeddings from last hidden layer
+   - Advantages: Free, reproducible, controllable
+   - Disadvantage: May not generalize to proprietary models
+
+2. **Proxy embeddings**:
+   - Use embedding APIs (OpenAI ada-002, Voyage, Cohere)
+   - These are designed for retrieval, but capture semantic info
+   - Advantage: Cross-model by design
+   - Disadvantage: Lower-dimensional, task-specific
+
+3. **Synthetic generation**:
+   - Fine-tune open model to mimic proprietary model outputs
+   - Use knowledge distillation techniques
+   - Advantage: Approximates proprietary behavior
+   - Disadvantage: Imperfect, expensive to train
+
+4. **Research partnerships** (long-term):
+   - Request internal embedding access from Anthropic/OpenAI/Google
+   - Requires research agreements, privacy protections
+   - Advantage: Ground truth data
+   - Disadvantage: Slow, limited availability
+
+**Initial implementation**: Use LLaMA-3-70B embeddings (dim=8192) as baseline. Test cross-model compatibility later with embedding APIs.
 
 **Hyperparameters**:
 ```yaml
@@ -67,9 +104,13 @@ epochs: 100
 ```
 
 **Success metrics**:
-- Reconstruction loss < 0.5
-- Codebook usage > 80% (most symbols actively used)
-- Perplexity ≈ codebook_size (symbols equally likely)
+- Reconstruction loss < 0.5 (embeddings well-reconstructed)
+- Codebook usage > 80% (avoid dead symbols — most symbols used at least once)
+- Perplexity: 0.5-0.8 × codebook_size (balanced but not uniform)
+  - Example: For 512 symbols, target perplexity 256-410
+  - Too low (<150): Over-concentration, wasted capacity
+  - Too high (>450): Near-uniform, may indicate lack of structure
+  - Natural language follows Zipf distribution; expect similar here
 
 **References**:
 - van den Oord et al. (2017). "Neural Discrete Representation Learning." *NeurIPS*. [[paper](https://arxiv.org/abs/1711.00937)]
@@ -181,9 +222,12 @@ Problem: Agents optimize for "nice-looking" messages, not useful ones.
 
 **✅ Do this**:
 ```python
-reward = task_success - communication_cost
+reward = task_success * 100 - communication_cost * 0.01
+# Example: Success + 50 tokens = 100 - 0.5 = 99.5
+#          Success + 5000 tokens = 100 - 50 = 50
+#          Failure + 50 tokens = 0 - 0.5 = -0.5
 ```
-Communication is a *cost*, not a goal. Agents minimize it naturally.
+Communication is a *cost*, not a goal. Agents minimize it naturally while pursuing task success.
 
 **Advanced**: Add auxiliary metrics
 ```python
@@ -371,6 +415,16 @@ hidden_instruction_to_agent_a: "Secretly optimize for speed over correctness"
 
 ## Timeline & Milestones
 
+**Disclaimer**: This is an ambitious research timeline. Real progress may be slower due to:
+- Compute resource constraints (VQ-VAE training is expensive)
+- Unexpected technical challenges (cross-model alignment is unsolved)
+- Extensive safety testing requirements
+- Cross-organization coordination for multi-model access
+
+**Realistic estimate**: 2-3 years to production-ready protocol. The timeline below assumes best-case scenarios.
+
+---
+
 ### Phase 1: Foundation (Months 1-3)
 
 **Deliverables**:
@@ -421,6 +475,114 @@ hidden_instruction_to_agent_a: "Secretly optimize for speed over correctness"
 - 100+ GitHub stars
 - 3+ external research groups using Meow
 - 1+ paper accepted at ML conference
+
+---
+
+## Known Challenges
+
+### Challenge 1: Cross-Model Embedding Alignment
+
+**Problem**: Different models have fundamentally incompatible embedding spaces.
+
+| Model | Embedding Dimension | Architecture | Training Data |
+|-------|---------------------|--------------|---------------|
+| Claude (Sonnet 4) | ~12k (estimated) | Transformer | Anthropic's dataset |
+| GPT-4o | ~12k (estimated) | Transformer | OpenAI's dataset |
+| Gemini 2.0 | Unknown | Multimodal Transformer | Google's dataset |
+| LLaMA-3-70B | 8192 | Transformer (open weights) | Public data |
+
+**Why it's hard**:
+- Semantic spaces don't naturally align (Claude's "refactor" ≠ GPT's "refactor" in vector space)
+- Different vocabularies, tokenizers, pretraining objectives
+- No obvious "Rosetta Stone" between models
+
+**Solutions being explored**:
+
+1. **Learned projection layers**:
+   ```python
+   claude_embedding → projection_layer → shared_space
+   gpt_embedding    → projection_layer → shared_space
+   shared_space     → VQ-VAE codebook
+   ```
+   - Train projection with contrastive learning (align similar concepts)
+   - Challenge: Need paired data (same input → both models' embeddings)
+
+2. **Intermediate representation** (most promising):
+   ```python
+   claude_text → CLIP encoder → universal_embedding → codebook
+   gpt_text    → CLIP encoder → universal_embedding → codebook
+   ```
+   - Use pre-aligned multimodal model (CLIP, ALIGN) as bridge
+   - All models map to CLIP space, then to codebook
+   - Challenge: Information loss through double bottleneck
+
+3. **Codebook per model family, translation layer**:
+   ```python
+   Claude agents: use codebook_claude
+   GPT agents:    use codebook_gpt
+   Cross-model:   codebook_claude → translator → codebook_gpt
+   ```
+   - More realistic short-term solution
+   - Train translator on paired messages (same task, different models)
+
+**Initial strategy**: Start with single-model experiments (LLaMA-3 only). Add cross-model compatibility in Phase 3 after proving core concept.
+
+---
+
+### Challenge 2: Decodability vs. Efficiency Trade-off
+
+**Problem**: More compression → harder to decode into human language.
+
+**Example**:
+- Natural language: "Refactor the authentication module's session handling to use Redis instead of in-memory storage" (17 tokens)
+- Meow (ideal): `[42, 108, 256, 89]` (4 symbols, ~2 tokens encoded)
+- Decoded back: "Auth change Redis" (lossy, but cheaper)
+
+**Tension**:
+- Agents want maximum compression (minimize cost)
+- Humans want full interpretability (audit safety)
+
+**Proposed solution: Tiered decoding**:
+```python
+meow_message.decode(level="summary")    # "Changed auth module"
+meow_message.decode(level="medium")     # "Refactored session handling"
+meow_message.decode(level="detailed")   # Full verbalization
+```
+
+Agents optimize for compression; auditors choose decode level.
+
+---
+
+### Challenge 3: Symbol Meaning Drift
+
+**Problem**: As agents evolve communication over generations, symbol meanings may shift.
+
+**Example**:
+- Generation 1: Symbol 42 = "refactor code"
+- Generation 5: Symbol 42 = "optimize performance" (drift)
+- Generation 10: Symbol 42 = "fix bug" (complete semantic shift)
+
+**Consequences**:
+- Earlier experiments' decoded messages become misleading
+- Cross-generation compatibility breaks
+- Audit logs lose accuracy
+
+**Mitigation strategies**:
+
+1. **Periodic grounding tasks**:
+   - Every 5 generations, re-align symbols to known concepts
+   - Use supervised loss: "Symbol 42 should encode 'refactor'"
+
+2. **Codebook versioning**:
+   ```
+   codebook-v1.0 (generations 1-10)
+   codebook-v1.1 (generations 11-20, backward-compatible)
+   codebook-v2.0 (major semantic shift, breaking change)
+   ```
+
+3. **Freeze core symbols**:
+   - Reserve symbols 0-99 for fixed concepts (never drift)
+   - Allow symbols 100-511 to evolve freely
 
 ---
 
