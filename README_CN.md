@@ -12,6 +12,12 @@
 
 这里也一样：Meow 消息可以按需解码成人类语言。但 agent 之间传递的，是比文字更高维的信息。
 
+<p align="center">
+  <img src="./assets/chuliu_cat.jpg" width="300" alt="初六 - Meow 吉祥物" />
+  <br/>
+  <em>初六 — 我们的吉祥物，提醒我们 Meow 是猫为人类发明的。</em>
+</p>
+
 ---
 
 ## 问题

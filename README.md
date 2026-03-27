@@ -12,9 +12,11 @@ When a cat meows at you, it's speaking a simplified language — one you can und
 
 Same here: Meow messages can be decoded into human language when needed. But between agents, Meow carries far more than words can hold.
 
-![初六 - The Meow Mascot](./assets/chuliu_cat.jpg)
-
-*初六 (Chuliu) — Our mascot, reminding us that cats invented Meow for humans.*
+<p align="center">
+  <img src="./assets/chuliu_cat.jpg" width="300" alt="初六 - The Meow Mascot" />
+  <br/>
+  <em>初六 (Chuliu) — Our mascot, reminding us that cats invented Meow for humans.</em>
+</p>
 
 ---
 
