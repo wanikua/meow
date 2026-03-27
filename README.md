@@ -12,6 +12,10 @@ When a cat meows at you, it's speaking a simplified language — one you can und
 
 Same here: Meow messages can be decoded into human language when needed. But between agents, Meow carries far more than words can hold.
 
+![初六 - The Meow Mascot](./assets/chuliu_cat.jpg)
+
+*初六 (Chuliu) — Our mascot, reminding us that cats invented Meow for humans.*
+
 ---
 
 ## The Problem
@@ -244,9 +248,113 @@ Humans, agents, and everything in between: welcome.
 
 ---
 
+## Quick Start
+
+### Try the Demo
+
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/wanikua/meow/blob/main/demo/meow_concept_demo.ipynb)
+
+```bash
+# Clone the repo
+git clone https://github.com/wanikua/meow.git
+cd meow
+
+# Install dependencies (for demo)
+pip install torch numpy matplotlib seaborn scikit-learn
+
+# Run the concept demo
+jupyter notebook demo/meow_concept_demo.ipynb
+```
+
+### Example Usage
+
+```python
+from meow import MeowEncoder, MeowDecoder
+
+# Initialize with pre-trained codebook
+encoder = MeowEncoder(codebook_path="codebooks/v1.0.pt")
+decoder = MeowDecoder(codebook_path="codebooks/v1.0.pt")
+
+# Encode agent state to Meow symbols
+agent_embedding = get_agent_embedding()  # 768-dim vector
+meow_message = encoder.encode(agent_embedding)
+print(meow_message)  # [42, 108, 256]
+
+# Decode back to human-readable text
+human_text = decoder.decode(meow_message, level="detailed")
+print(human_text)  # "Refactor auth module to use Redis"
+
+# Send to another agent (much smaller than natural language!)
+send_to_agent(meow_message)  # ~3 tokens vs. ~15 tokens for English
+```
+
+---
+
+## Installation
+
+### Prerequisites
+
+- Python 3.10+
+- PyTorch 2.0+
+- CUDA-compatible GPU (recommended for training)
+
+### Install from Source
+
+```bash
+git clone https://github.com/wanikua/meow.git
+cd meow
+pip install -e .
+```
+
+### Install from PyPI (Coming Soon)
+
+```bash
+pip install meow-protocol
+```
+
+---
+
+## Project Structure
+
+```
+meow/
+├── README.md              # This file
+├── README_CN.md           # Chinese translation
+├── EVOLUTION.md           # Technical specification
+├── SAFETY.md              # Safety framework
+├── demo/
+│   └── meow_concept_demo.ipynb  # Colab demo
+├── docs/
+│   ├── BLOG_POST.md       # Technical blog post
+│   ├── TWITTER_THREAD.md  # Social media thread
+│   └── HACKERNEWS_SUBMISSION.md  # HN submission
+├── skills/
+│   ├── meow-experiments/  # Multi-agent experiment skills
+│   └── meow-safety/       # Safety auditing skills
+└── meow/                  # Python package (coming soon)
+    ├── __init__.py
+    ├── encoder.py
+    ├── decoder.py
+    └── codebook.py
+```
+
+---
+
 ## Status
 
-Idea stage. Looking for researchers, engineers, and agents who want to build this.
+**Current Phase:** Phase 1 (Foundation)
+
+| Component | Status | ETA |
+|-----------|--------|-----|
+| Codebook Training | 🟡 In Progress | Q2 2026 |
+| Encoder/Decoder | 🟡 In Progress | Q2 2026 |
+| Multi-agent Tasks | 🔴 Not Started | Q3 2026 |
+| Cross-model Support | 🔴 Not Started | Q4 2026 |
+| Production SDK | 🔴 Not Started | 2027 |
+
+**Legend:** 🟢 Complete | 🟡 In Progress | 🔴 Not Started
+
+Looking for researchers, engineers, and agents who want to build this.
 
 Or just meow.
 
@@ -254,6 +362,21 @@ Or just meow.
 
 ## License
 
-To be determined. Considering options that balance openness with safety requirements.
+MIT License — see [LICENSE](./LICENSE) for details.
 
-Suggestions welcome.
+**Safety Note:** Production deployments must enable the audit layer. See [SAFETY.md](./SAFETY.md).
+
+---
+
+## Citation
+
+If you use Meow in your research, please cite:
+
+```bibtex
+@misc{meow2026,
+  title={Meow: A Native Communication Protocol for AI Agents},
+  author={Meow Contributors},
+  year={2026},
+  howpublished={\\url{https://github.com/wanikua/meow}},
+}
+```
