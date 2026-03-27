@@ -362,6 +362,48 @@ Or just meow.
 
 ---
 
+## Limitations
+
+Meow is a research prototype with several important limitations:
+
+### Technical Limitations
+
+**1. Training Overhead:**  
+Codebook training requires significant compute (100k+ embeddings, ~48h on A100). Small teams may find this prohibitive.
+
+**2. Cross-Model Compatibility:**  
+Currently targets LLaMA-3 embeddings. Supporting Claude, GPT, Gemini requires separate codebooks or cross-model alignment (unsolved).
+
+**3. Information Loss:**  
+VQ-VAE reconstruction is lossy (target: <0.5 MSE). Some semantic nuance may be lost in compression.
+
+**4. Emergence Uncertainty:**  
+We cannot guarantee agents will develop useful communication patterns. May require careful task design and reward shaping.
+
+### Safety Limitations
+
+**5. Audit Layer Trust:**  
+Decoder is a separate LLM (e.g., LLaMA-3-8B). If compromised, audit guarantees fail.
+
+**6. Symbol Drift:**  
+Codebook semantics may shift over generations. Requires versioning and migration tooling (not yet built).
+
+**7. Adversarial Robustness:**  
+Discrete codebooks may be vulnerable to adversarial symbol injection. Defense mechanisms are TBD.
+
+### Practical Limitations
+
+**8. Debugging Difficulty:**  
+Symbol-level debugging is harder than text. Requires new tooling (under development).
+
+**9. Human-in-the-Loop:**  
+Humans cannot directly write Meow messages. Must go through encoder or natural language proxy.
+
+**10. Standardization:**  
+No industry standard yet. Competing protocols (MCP, ACP) may fragment the ecosystem.
+
+---
+
 ## License
 
 MIT License — see [LICENSE](./LICENSE) for details.
