@@ -29,10 +29,14 @@ from .codebook import MeowCodebook
 from .encoder import MeowEncoder
 from .decoder import MeowDecoder
 from .audit import MeowAudit
+from .data import SyntheticEmbeddingDataset, EmbeddingFileDataset, create_dataloaders
 
 __all__ = [
     "MeowCodebook",
     "MeowEncoder",
     "MeowDecoder",
     "MeowAudit",
+    "SyntheticEmbeddingDataset",
+    "EmbeddingFileDataset",
+    "create_dataloaders",
 ]

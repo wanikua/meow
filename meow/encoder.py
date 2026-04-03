@@ -132,4 +132,4 @@ class MeowEncoder:
         Returns:
             Codebook embeddings (num_symbols, codebook_dim)
         """
-        return self.codebook.quantizer.embedding.weight.cpu().numpy()
+        return self.codebook.quantizer.embedding.weight.detach().cpu().numpy()

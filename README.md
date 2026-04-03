@@ -320,37 +320,47 @@ pip install meow-protocol
 
 ```
 meow/
-├── README.md              # This file
-├── README_CN.md           # Chinese translation
-├── EVOLUTION.md           # Technical specification
-├── SAFETY.md              # Safety framework
-├── demo/
-│   └── meow_concept_demo.ipynb  # Colab demo
-├── docs/
-│   ├── BLOG_POST.md       # Technical blog post
-│   ├── TWITTER_THREAD.md  # Social media thread
-│   └── HACKERNEWS_SUBMISSION.md  # HN submission
-├── skills/
-│   ├── meow-experiments/  # Multi-agent experiment skills
-│   └── meow-safety/       # Safety auditing skills
-└── meow/                  # Python package (coming soon)
-    ├── __init__.py
-    ├── encoder.py
-    ├── decoder.py
-    └── codebook.py
+├── README.md                  # This file
+├── EVOLUTION.md               # Technical specification
+├── ITERATIONS.md              # 30-iteration development plan
+├── SAFETY.md                  # Safety framework
+├── setup.py                   # Package configuration
+├── meow/                      # Python package
+│   ├── __init__.py
+│   ├── codebook.py            # VQ-VAE codebook (VectorQuantizer + MeowCodebook)
+│   ├── encoder.py             # MeowEncoder
+│   ├── decoder.py             # MeowDecoder (embedding + text decoding)
+│   ├── audit.py               # Audit layer (safety inspection)
+│   ├── data.py                # Training data (synthetic + file loading)
+│   ├── train_codebook.py      # Codebook training script
+│   ├── extract_embeddings.py  # HuggingFace embedding extraction
+│   ├── evaluate_codebook.py   # Codebook evaluation
+│   ├── run_experiment.py      # Multi-agent experiment runner
+│   ├── analysis.py            # Symbol usage analysis
+│   └── tasks/                 # Multi-agent task framework
+│       ├── harness.py         # Agent, Channel, Environment, Runner
+│       ├── rewards.py         # Reward functions
+│       ├── coding_task.py     # Cooperative code refactoring
+│       ├── logic_task.py      # Distributed logic puzzle
+│       └── hypothesis_task.py # Parallel hypothesis exploration
+├── tests/                     # 55 tests
+├── codebooks/                 # Trained codebook checkpoints
+├── data/                      # Embedding datasets
+└── experiments/               # Experiment results
 ```
 
 ---
 
 ## Status
 
-**Current Phase:** Phase 1 (Foundation)
+**Current Phase:** Phase 2 (Emergence)
 
-| Component | Status | ETA |
-|-----------|--------|-----|
-| Codebook Training | 🟡 In Progress | Q2 2026 |
-| Encoder/Decoder | 🟡 In Progress | Q2 2026 |
-| Multi-agent Tasks | 🔴 Not Started | Q3 2026 |
+| Component | Status | Notes |
+|-----------|--------|-------|
+| Codebook Training | 🟢 Complete | VQ-VAE with EMA, dead symbol reset, v0.1 trained |
+| Encoder/Decoder | 🟢 Complete | Batch encode/decode, multi-level text decoding |
+| Multi-agent Tasks | 🟢 Complete | 3 tasks (coding, logic, hypothesis), REINFORCE training |
+| Emergence Experiments | 🟡 In Progress | 3-10× above random baseline across all tasks |
 | Cross-model Support | 🔴 Not Started | Q4 2026 |
 | Production SDK | 🔴 Not Started | 2027 |
 

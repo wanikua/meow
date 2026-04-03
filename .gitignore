@@ -12,18 +12,28 @@ ENV/
 .ipynb_checkpoints
 *.ipynb_checkpoints
 
-# Experiment artifacts (large files)
-experiments/artifacts/*.pkl
-experiments/artifacts/*.pth
-experiments/artifacts/*/checkpoint_*.pth
+# Experiment artifacts
+experiments/*.json
+experiments/safety/*.json
 
-# Logs (optional: commit summaries, ignore detailed logs)
+# Trained models and data (large)
+codebooks/*.pt
+data/*.pt
+data/*.npy
+checkpoints/
+
+# Logs
 experiments/logs/*.log
 experiments/logs/tensorboard/
 
-# Local learnings (optional: track or keep private)
+# Local learnings
 .learnings/*.md
 !.learnings/.gitkeep
+
+# Build artifacts
+*.egg-info/
+dist/
+build/
 
 # IDE
 .vscode/

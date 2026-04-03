@@ -1,0 +1,7 @@
+{
+  "model": "sentence-transformers/all-MiniLM-L6-v2",
+  "num_texts": 265,
+  "num_embeddings": 10600,
+  "embedding_dim": 384,
+  "augment_repeats": 40
+}

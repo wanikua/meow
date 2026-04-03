@@ -1,0 +1,26 @@
+{
+  "codebook_path": "/Users/wanglk01/Documents/Claude/Projects/meow/codebooks/codebook_v0.1.pt",
+  "data_path": "/Users/wanglk01/Documents/Claude/Projects/meow/data/embeddings.pt",
+  "num_samples": 10600,
+  "num_unique": 265,
+  "input_dim": 384,
+  "codebook_dim": 128,
+  "num_symbols": 512,
+  "reconstruction": {
+    "mse_mean": 0.064936,
+    "mse_median": 0.06205,
+    "mse_p95": 0.099859,
+    "cosine_sim_mean": 0.3699,
+    "cosine_sim_min": 0.0407
+  },
+  "usage": {
+    "symbols_used": 150,
+    "usage_rate": 0.293,
+    "dead_symbols": 362,
+    "perplexity": 116.7
+  },
+  "success_criteria": {
+    "recon_loss_lt_0.5": true,
+    "usage_gt_80pct": false
+  }
+}

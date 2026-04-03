@@ -110,19 +110,24 @@ class MeowDecoder:
         """
         # Decode to embedding first
         embedding = self.decode(symbols)
-        
-        # TODO: Use fine-tuned LLM decoder when available
-        # For now, return placeholder text
-        
+
+        # Normalize symbols to a flat list of ints for text generation
+        if isinstance(symbols, list):
+            symbol_ids = symbols
+        elif isinstance(symbols, np.ndarray):
+            symbol_ids = symbols.flatten().tolist()
+        else:
+            symbol_ids = symbols.flatten().tolist()
+
         batch_size = embedding.shape[0]
-        
+
         if level == "summary":
-            texts = [f"[Meow message: {s[0].item()}]" for s in (symbols if symbols.dim() > 1 else symbols.unsqueeze(1))]
+            texts = [f"[Meow message: {symbol_ids[0]}]"]
         elif level == "medium":
-            texts = [f"[Meow symbol {s[0].item()}: agent state update]" for s in (symbols if symbols.dim() > 1 else symbols.unsqueeze(1))]
+            texts = [f"[Meow symbol {symbol_ids[0]}: agent state update]"]
         else:  # detailed
-            texts = [f"[Meow symbol {s[0].item()}: reconstructed embedding dim={embedding.shape[1]}]" for s in (symbols if symbols.dim() > 1 else symbols.unsqueeze(1))]
-        
+            texts = [f"[Meow symbol {symbol_ids[0]}: reconstructed embedding dim={embedding.shape[1]}]"]
+
         return texts[0] if batch_size == 1 else texts
     
     def decode_with_confidence(

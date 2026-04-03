@@ -26,16 +26,18 @@ class VectorQuantizer(nn.Module):
         commitment_cost: float = 0.25,
         decay: float = 0.99,
         epsilon: float = 1e-5,
+        dead_threshold: int = 2,
     ):
         """
         Initialize the vector quantizer.
-        
+
         Args:
             num_embeddings: Number of discrete symbols in codebook (default: 512)
             embedding_dim: Dimension of each embedding (default: 768)
             commitment_cost: Weight for commitment loss (default: 0.25)
             decay: EMA decay factor (default: 0.99)
             epsilon: Small constant for numerical stability (default: 1e-5)
+            dead_threshold: Reset symbols used fewer than this many times per batch (default: 2)
         """
         super().__init__()
         self.num_embeddings = num_embeddings
@@ -43,11 +45,12 @@ class VectorQuantizer(nn.Module):
         self.commitment_cost = commitment_cost
         self.decay = decay
         self.epsilon = epsilon
-        
+        self.dead_threshold = dead_threshold
+
         # Codebook embeddings
         self.embedding = nn.Embedding(num_embeddings, embedding_dim)
         self.embedding.weight.data.uniform_(-1/num_embeddings, 1/num_embeddings)
-        
+
         # EMA tracking
         self.register_buffer('ema_cluster_size', torch.zeros(num_embeddings))
         self.register_buffer('ema_w', torch.zeros(num_embeddings, embedding_dim))
@@ -85,16 +88,27 @@ class VectorQuantizer(nn.Module):
         
         # EMA updates (during training)
         if self.training:
-            self.ema_cluster_size = self.ema_cluster_size * self.decay + (1 - self.decay) * encodings.sum(dim=0)
+            batch_cluster_counts = encodings.sum(dim=0)
+            self.ema_cluster_size = self.ema_cluster_size * self.decay + (1 - self.decay) * batch_cluster_counts
             self.ema_w = self.ema_w * self.decay + (1 - self.decay) * torch.matmul(encodings.T, inputs)
-            
+
             # Normalize and update codebook
             n = self.ema_cluster_size.sum()
             normalized_cluster_size = (
-                (self.ema_cluster_size + self.epsilon) / 
+                (self.ema_cluster_size + self.epsilon) /
                 (n + self.num_embeddings * self.epsilon) * n
             )
             self.embedding.weight.data = self.ema_w / normalized_cluster_size.unsqueeze(1)
+
+            # Reset dead symbols: replace entries with low cumulative EMA usage
+            dead_mask = self.ema_cluster_size < self.dead_threshold
+            n_dead = dead_mask.sum().item()
+            if n_dead > 0 and inputs.shape[0] > 0:
+                replace_idx = torch.randint(0, inputs.shape[0], (n_dead,), device=inputs.device)
+                noise = torch.randn_like(inputs[replace_idx]) * 0.01
+                self.embedding.weight.data[dead_mask] = inputs[replace_idx].detach() + noise
+                self.ema_cluster_size[dead_mask] = 1.0
+                self.ema_w[dead_mask] = self.embedding.weight.data[dead_mask]
         
         # Pass gradients
         quantized = inputs + (quantized - inputs).detach()
